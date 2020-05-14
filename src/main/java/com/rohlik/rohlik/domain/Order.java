@@ -33,4 +33,11 @@ public class Order extends CodedEntity<Long> {
 
     @Column(name = "CREATION_DATE")
     private LocalDateTime creationDate;
+
+    @Column(name = "TOTAL_PRICE")
+    private BigDecimal totalPrice;
+
+    @Column(name="PAYMENT_RECEIVED")
+    private boolean paymentReceived;
+    //persist total price
 }

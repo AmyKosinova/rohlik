@@ -10,14 +10,18 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.AssertTrue;
+import javax.xml.ws.RespectBinding;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
@@ -40,20 +44,26 @@ public class OrderEndpoint {
                             .missingProducts(missingProducts)
                             .build());
         }
-        BigDecimal orderPrice = orderService.createOrder(orderRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(OrderResponse.builder().totalPrice(orderPrice)
-                        .build());
+                .body(orderService.createOrder(orderRequest));
     }
 
     @DeleteMapping
-    public void deleteOrder(Long orderId) {
-
+    public ResponseEntity deleteOrder(@RequestParam Long orderId) {
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.ok("Order " + orderId + " deleted");
     }
 
     @PutMapping
-    public void updateOder(Long orderId) {
-
+    public ResponseEntity updateOder(@RequestBody OrderRequest orderRequest) {
+        Assert.state(orderRequest.getId() != null && orderRequest.getId() > 0, "ID of order must be provided");
+        if (orderRequest.getIncomingPayment() != null
+                && BigDecimal.ZERO.compareTo(orderRequest.getIncomingPayment()) < 0) {
+            orderService.registerPayment(orderRequest);
+            return ResponseEntity
+                    .ok("Order payed.");
+        }
+        throw new UnsupportedOperationException("Only positive money payment is possible");
     }
 
     @GetMapping

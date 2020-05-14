@@ -6,20 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-class DefaultMappingTest {
+class OrderMapperTest {
 
     @Autowired
-    DefaultMapping defaultMapping;
+    OrderMapper orderMapper;
 
     @Test
     void shouldMap2ndLvl(){
         ProductDTO dto = new ProductDTO();
         dto.setId(2L);
         dto.setName("vlk");
-        OrderedProduct orderedProduct = defaultMapping.toOrderedProduct(dto);
+        OrderedProduct orderedProduct = orderMapper.toOrderedProduct(dto);
         System.out.println(orderedProduct);
     }
 

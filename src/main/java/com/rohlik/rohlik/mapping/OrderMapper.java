@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(config = MappingConfig.class)
-public interface DefaultMapping {
+public interface OrderMapper {
 
     Product toProduct(ProductDTO productDTO);
 
@@ -22,8 +22,6 @@ public interface DefaultMapping {
     @Mapping(target = "originalProduct.id", source = "id")
     @Mapping(target = "id", ignore = true)
     OrderedProduct toOrderedProduct(ProductDTO productDTO);
-
-    Set<Product> toProduct(Collection<ProductDTO> productDTO);
 
     Set<OrderedProduct> toOrderedProduct(Collection<ProductDTO> productDTO);
 

@@ -13,7 +13,8 @@ import java.util.Set;
 @Builder
 public class OrderResponse {
 
-    Set<ProductDTO> missingProducts;
-    BigDecimal totalPrice;
+    private Long orderId;
+    private Set<ProductDTO> missingProducts;
+    private BigDecimal totalPrice;
 
 }
