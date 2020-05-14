@@ -2,9 +2,9 @@ package com.rohlik.rohlik.endpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rohlik.rohlik.domain.Product;
-import com.rohlik.rohlik.domain.repository.ProductRepository;
-import com.rohlik.rohlik.endpoint.request.OrderDTO;
-import com.rohlik.rohlik.endpoint.request.ProductDTO;
+import com.rohlik.rohlik.endpoint.payload.OrderRequest;
+import com.rohlik.rohlik.endpoint.payload.OrderResponse;
+import com.rohlik.rohlik.endpoint.payload.ProductDTO;
 import com.rohlik.rohlik.service.OrderService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.naming.ldap.PagedResultsResponseControl;
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("order/")
@@ -32,16 +32,18 @@ public class OrderEndpoint {
 
     @PostMapping
     @SneakyThrows
-    public ResponseEntity createOrder(@RequestBody OrderDTO orderDTO) {
-        Map<ProductDTO, Integer> missingProducts = orderService.areProductsAvailable(orderDTO.getProducts());
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
+        Set<ProductDTO> missingProducts = orderService.areProductsAvailable(orderRequest.getProducts());
         if (!missingProducts.isEmpty()) {
             return ResponseEntity.badRequest()
-//                    .body(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(missingProducts))
-                    .body(missingProducts)
-                    ;
+                    .body(OrderResponse.builder()
+                            .missingProducts(missingProducts)
+                            .build());
         }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-//        orderService.createOrder();
+        BigDecimal orderPrice = orderService.createOrder(orderRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(OrderResponse.builder().totalPrice(orderPrice)
+                        .build());
     }
 
     @DeleteMapping

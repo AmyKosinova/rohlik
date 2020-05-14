@@ -1,7 +1,7 @@
 package com.rohlik.rohlik.endpoint;
 
-import com.rohlik.rohlik.endpoint.request.OrderDTO;
-import com.rohlik.rohlik.endpoint.request.ProductDTO;
+import com.rohlik.rohlik.endpoint.payload.OrderRequest;
+import com.rohlik.rohlik.endpoint.payload.ProductDTO;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,7 +24,7 @@ public class ProductEndpoint {
     }
 
     @PutMapping
-    public void updateOder(OrderDTO orderDTO) {
+    public void updateOder(OrderRequest orderRequest) {
 
     }
 

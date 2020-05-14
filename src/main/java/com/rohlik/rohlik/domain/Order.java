@@ -2,6 +2,8 @@ package com.rohlik.rohlik.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +12,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -20,11 +24,13 @@ public class Order extends CodedEntity<Long> {
 
     @OneToMany
     @JoinTable(
-            name="ORDERED_PRODUCTS",
-            joinColumns = @JoinColumn( name="ORDER_ID"),
-            inverseJoinColumns = @JoinColumn( name="PRODUCT_ID")
+            name = "PRODUCTS_OF_ORDER",
+            joinColumns = @JoinColumn(name = "ORDER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
     )
-    List<Product> products;
+    @Cascade(CascadeType.ALL)
+    private Set<OrderedProduct> products;
 
-
+    @Column(name = "CREATION_DATE")
+    private LocalDateTime creationDate;
 }
