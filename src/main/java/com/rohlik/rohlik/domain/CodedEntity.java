@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class CodedEntity<PK extends Serializable> {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private PK id;
 
 }

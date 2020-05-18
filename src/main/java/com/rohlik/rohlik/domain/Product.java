@@ -17,13 +17,13 @@ public class Product extends CodedEntity<Long> {
     @Column(name = "NAME")
     private String name;
 
-        @Column(name = "STOCK")
+    @Column(name = "STOCK")
     private Long stock;
 
     @Column(name = "UNIT_PRICE")
     private BigDecimal unitPrice;
 
-    public Product updateStock(Long delta){
+    public Product updateStock(Long delta) {
         stock += delta;
         return this;
     }

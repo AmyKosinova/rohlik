@@ -1,45 +1,49 @@
 package com.rohlik.rohlik.service;
 
-import com.google.common.collect.ImmutableSet;
-import com.rohlik.rohlik.domain.CodedEntity;
-import com.rohlik.rohlik.domain.Order;
 import com.rohlik.rohlik.domain.Product;
-import com.rohlik.rohlik.domain.repository.OrderRepository;
 import com.rohlik.rohlik.domain.repository.ProductRepository;
-import com.rohlik.rohlik.endpoint.payload.OrderRequest;
-import com.rohlik.rohlik.endpoint.payload.OrderResponse;
 import com.rohlik.rohlik.endpoint.payload.ProductDTO;
-import com.rohlik.rohlik.mapping.OrderMapper;
+import com.rohlik.rohlik.mapping.ProductMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class ProductService {
 
     private ProductRepository productRepository;
+    private ProductMapper productMapper;
 
-    public void createProduct(){
-
+    @Transactional
+    public void createProduct(ProductDTO productDTO) {
+        if (!productRepository.findByName(productDTO.getName()).isEmpty()) {
+            throw new IllegalStateException("Product with name: " + productDTO.getName() + " already exists");
+        }
+        Product product = productMapper.toProduct(productDTO);
+        product.setId(null);
+        productRepository.save(product);
     }
 
-    public void deleteProduct(){
-
+    @Transactional
+    public void deleteProduct(ProductDTO productDTO) {
+        Product product = getProduct(productDTO);
+        productRepository.delete(product);
     }
 
-    public void updateProduct(){
+    @Transactional
+    public void updateProduct(ProductDTO productDTO) {
+        Product product = getProduct(productDTO);
+        Product updatedProduct = productMapper.toProduct(productDTO);
+        productRepository.save(updatedProduct);
+    }
 
+    private Product getProduct(ProductDTO productDTO) {
+        Assert.notNull(productDTO.getId(), "Id of product must be provided for this operation");
+        return productRepository.findById(productDTO.getId()).orElseThrow(() -> new IllegalStateException("Product with ID: " + productDTO.getId() + " does not exists!"));
     }
 
 }
+

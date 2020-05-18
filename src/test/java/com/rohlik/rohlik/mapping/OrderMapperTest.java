@@ -5,6 +5,10 @@ import com.rohlik.rohlik.endpoint.payload.ProductDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class OrderMapperTest {
@@ -18,7 +22,8 @@ class OrderMapperTest {
         dto.setId(2L);
         dto.setName("vlk");
         OrderedProduct orderedProduct = orderMapper.toOrderedProduct(dto);
-        System.out.println(orderedProduct);
+
+        assertNotNull(orderedProduct.getOriginalProduct());
     }
 
 }

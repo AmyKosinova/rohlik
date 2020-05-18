@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 @Mapper(config = MappingConfig.class)
 public interface OrderMapper {
 
-    Product toProduct(ProductDTO productDTO);
-
     @Mapping(target = "originalProduct.name", source = "name")
     @Mapping(target = "originalProduct.id", source = "id")
     @Mapping(target = "id", ignore = true)

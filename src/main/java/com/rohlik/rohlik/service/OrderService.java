@@ -32,9 +32,7 @@ public class OrderService {
 
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-
-    @Autowired
-    private OrderMapper orderMapper;
+    private final OrderMapper orderMapper;
 
 
     @Transactional

@@ -11,6 +11,7 @@ import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +28,8 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("order/")
 @AllArgsConstructor
+@RequestMapping("order/")
 public class OrderEndpoint {
 
     private final OrderService orderService;
@@ -36,7 +37,7 @@ public class OrderEndpoint {
 
     @PostMapping
     @SneakyThrows
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
+    public ResponseEntity<OrderResponse> createOrder(@Validated @RequestBody OrderRequest orderRequest) {
         Set<ProductDTO> missingProducts = orderService.areProductsAvailable(orderRequest.getProducts());
         if (!missingProducts.isEmpty()) {
             return ResponseEntity.badRequest()
