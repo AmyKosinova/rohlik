@@ -90,7 +90,7 @@ public class OrderService {
     }
 
     public void flushExpiredOrders() {
-        List<Order> byCreationDateBefore = orderRepository.findByCreationDateBefore(LocalDateTime.now().minusSeconds(15));
+        List<Order> byCreationDateBefore = orderRepository.findByCreationDateBeforeAndPaymentReceivedIsFalse(LocalDateTime.now().minusSeconds(15));
         if (!CollectionUtils.isEmpty(byCreationDateBefore)) {
             for (Order order : byCreationDateBefore) {
                 order.getProducts().forEach(p -> p.getOriginalProduct().updateStock(p.getAmount()));

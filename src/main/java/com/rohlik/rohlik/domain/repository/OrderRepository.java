@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface OrderRepository extends CrudRepository<Order, Long> {
 
-    List<Order> findByCreationDateBefore(LocalDateTime creationDate);
+    List<Order> findByCreationDateBeforeAndPaymentReceivedIsFalse(LocalDateTime creationDate);
 
 }
