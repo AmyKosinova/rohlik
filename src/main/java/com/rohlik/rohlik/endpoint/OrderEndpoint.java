@@ -1,7 +1,6 @@
 package com.rohlik.rohlik.endpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rohlik.rohlik.domain.Product;
 import com.rohlik.rohlik.endpoint.payload.OrderRequest;
 import com.rohlik.rohlik.endpoint.payload.OrderResponse;
 import com.rohlik.rohlik.endpoint.payload.ProductDTO;
@@ -21,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.AssertTrue;
-import javax.xml.ws.RespectBinding;
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.Set;
 
 @RestController
