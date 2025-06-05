@@ -1,12 +1,9 @@
-package com.rohlik.rohlik.endpoint.payload;
+package com.rohlik.rohlik.controller.payload;
 
-import com.rohlik.rohlik.domain.Product;
 import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Data

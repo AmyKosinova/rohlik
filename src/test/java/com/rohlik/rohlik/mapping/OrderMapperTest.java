@@ -1,17 +1,14 @@
 package com.rohlik.rohlik.mapping;
 
+import com.rohlik.rohlik.ContextTest;
+import com.rohlik.rohlik.controller.payload.ProductDTO;
 import com.rohlik.rohlik.domain.OrderedProduct;
-import com.rohlik.rohlik.endpoint.payload.ProductDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-class OrderMapperTest {
+class OrderMapperTest implements ContextTest {
 
     @Autowired
     OrderMapper orderMapper;

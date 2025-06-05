@@ -1,18 +1,17 @@
 package com.rohlik.rohlik.service;
 
 import com.google.common.collect.ImmutableSet;
+import com.rohlik.rohlik.properties.RohlikProperties;
 import com.rohlik.rohlik.domain.CodedEntity;
 import com.rohlik.rohlik.domain.Order;
 import com.rohlik.rohlik.domain.Product;
 import com.rohlik.rohlik.domain.repository.OrderRepository;
 import com.rohlik.rohlik.domain.repository.ProductRepository;
-import com.rohlik.rohlik.endpoint.payload.OrderRequest;
-import com.rohlik.rohlik.endpoint.payload.OrderResponse;
-import com.rohlik.rohlik.endpoint.payload.ProductDTO;
+import com.rohlik.rohlik.controller.payload.OrderRequest;
+import com.rohlik.rohlik.controller.payload.OrderResponse;
+import com.rohlik.rohlik.controller.payload.ProductDTO;
 import com.rohlik.rohlik.mapping.OrderMapper;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -22,7 +21,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,18 +31,16 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-
+    private final RohlikProperties rohlikProperties;
 
     @Transactional
     public OrderResponse createOrder(OrderRequest orderRequest) {
         flushExpiredOrders();
         orderRequest.getProducts()
-                .forEach(p -> {
-                    productRepository.save(
-                            productRepository.findById(p.getId())
-                                    .orElseThrow(() -> new IllegalStateException("Product not found " + p))
-                                    .updateStock(-p.getAmount()));
-                });
+                .forEach(p -> productRepository.save(
+                        productRepository.findById(p.getId())
+                                .orElseThrow(() -> new IllegalStateException("Product not found " + p))
+                                .updateStock(-p.getAmount())));
         Order order = createOrderInternal(orderRequest);
 
         return OrderResponse.builder()
@@ -72,9 +68,9 @@ public class OrderService {
     public Set<ProductDTO> areProductsAvailable(Set<ProductDTO> products) {
         flushExpiredOrders();
         Map<Long, Product> requestedProducts = ImmutableSet.copyOf(productRepository.findAllById(products
-                .stream()
-                .map(ProductDTO::getId)
-                .collect(Collectors.toList())))
+                        .stream()
+                        .map(ProductDTO::getId)
+                        .collect(Collectors.toList())))
                 .stream().collect(Collectors.toMap(CodedEntity::getId, p -> p));
 
         Assert.state(products.size() == requestedProducts.size(), () -> "Obtained id out of DB! " +
@@ -90,12 +86,13 @@ public class OrderService {
     }
 
     public void flushExpiredOrders() {
-        List<Order> byCreationDateBefore = orderRepository.findByCreationDateBeforeAndPaymentReceivedIsFalse(LocalDateTime.now().minusSeconds(15));
-        if (!CollectionUtils.isEmpty(byCreationDateBefore)) {
-            for (Order order : byCreationDateBefore) {
-                order.getProducts().forEach(p -> p.getOriginalProduct().updateStock(p.getAmount()));
-            }
-            orderRepository.deleteAll(byCreationDateBefore);
+        List<Order> ordersCreatedEarlier = orderRepository.findByCreationDateBeforeAndPaymentReceivedIsFalse(
+                LocalDateTime.now().minusSeconds(rohlikProperties.order.expirySeconds));
+        if (!CollectionUtils.isEmpty(ordersCreatedEarlier)) {
+            ordersCreatedEarlier.stream()
+                    .flatMap(o -> o.getProducts().stream())
+                    .forEach(p -> p.getOriginalProduct().updateStock(p.getAmount()));
+            orderRepository.deleteAll(ordersCreatedEarlier);
         }
     }
 
@@ -109,6 +106,7 @@ public class OrderService {
         Order order = getOrder(orderRequest.getId());
         Assert.state(!order.isPaymentReceived(), "Order was already payed!");
         Assert.state(order.getTotalPrice().compareTo(orderRequest.getIncomingPayment()) == 0, () -> "Payment does not match order value.");
+
         order.setPaymentReceived(true);
         orderRepository.save(order);
     }

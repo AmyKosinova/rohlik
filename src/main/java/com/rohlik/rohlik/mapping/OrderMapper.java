@@ -1,8 +1,7 @@
 package com.rohlik.rohlik.mapping;
 
 import com.rohlik.rohlik.domain.OrderedProduct;
-import com.rohlik.rohlik.domain.Product;
-import com.rohlik.rohlik.endpoint.payload.ProductDTO;
+import com.rohlik.rohlik.controller.payload.ProductDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

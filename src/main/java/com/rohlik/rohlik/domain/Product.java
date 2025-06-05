@@ -2,6 +2,7 @@ package com.rohlik.rohlik.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 @Data
 @Entity
 @Table(name = "PRODUCT")
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Product extends CodedEntity<Long> {
 

@@ -13,7 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -39,5 +38,4 @@ public class Order extends CodedEntity<Long> {
 
     @Column(name="PAYMENT_RECEIVED")
     private boolean paymentReceived;
-    //persist total price
 }

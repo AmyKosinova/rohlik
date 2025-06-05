@@ -1,16 +1,19 @@
-package com.rohlik.rohlik.endpoint.payload;
+package com.rohlik.rohlik.controller.payload;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.validation.annotation.Validated;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderRequest {
 
     private Long id;

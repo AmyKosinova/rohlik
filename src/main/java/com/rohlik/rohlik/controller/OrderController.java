@@ -1,12 +1,10 @@
-package com.rohlik.rohlik.endpoint;
+package com.rohlik.rohlik.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rohlik.rohlik.endpoint.payload.OrderRequest;
-import com.rohlik.rohlik.endpoint.payload.OrderResponse;
-import com.rohlik.rohlik.endpoint.payload.ProductDTO;
+import com.rohlik.rohlik.controller.payload.OrderRequest;
+import com.rohlik.rohlik.controller.payload.OrderResponse;
+import com.rohlik.rohlik.controller.payload.ProductDTO;
 import com.rohlik.rohlik.service.OrderService;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -25,14 +23,12 @@ import java.util.Set;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("order/")
-public class OrderEndpoint {
+@RequestMapping("order")
+public class OrderController {
 
     private final OrderService orderService;
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @PostMapping
-    @SneakyThrows
     public ResponseEntity<OrderResponse> createOrder(@Validated @RequestBody OrderRequest orderRequest) {
         Set<ProductDTO> missingProducts = orderService.areProductsAvailable(orderRequest.getProducts());
         if (!missingProducts.isEmpty()) {
