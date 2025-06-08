@@ -12,10 +12,10 @@ import com.rohlik.rohlik.mapping.ProductMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import jakarta.transaction.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -35,8 +35,7 @@ public class ProductService {
         }
         Product product = productMapper.toProduct(productDTO);
         product.setId(null);
-        productRepository.save(product);
-        return product;
+        return productRepository.save(product);
     }
 
     @Transactional

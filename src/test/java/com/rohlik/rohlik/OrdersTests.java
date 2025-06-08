@@ -11,10 +11,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import jakarta.transaction.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 class OrdersTests implements ContextTest {
 
@@ -22,6 +23,20 @@ class OrdersTests implements ContextTest {
     private OrderRepository orderRepository;
     @Autowired
     private OrderService orderService;
+
+    @Test
+    void shouldCalculateMissingProductAmount() {
+        ProductDTO productDTO = ProductDTO.builder()
+                .id(1L)
+                .amount(100L)
+                .build();
+
+        Set<ProductDTO> unavailableProducts = orderService.getUnavailableProducts(ImmutableSet.of(productDTO));
+
+        productDTO.setAmount(100 - 7L);
+        Assertions.assertThat(unavailableProducts)
+                .containsExactly(productDTO);
+    }
 
     @Test
     @Transactional
